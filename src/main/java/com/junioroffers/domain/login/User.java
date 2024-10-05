@@ -1,4 +1,10 @@
 package com.junioroffers.domain.login;
 
-public class User {
+import lombok.Builder;
+
+@Builder
+record User (String id,
+             String username,
+             String password
+) {
 }

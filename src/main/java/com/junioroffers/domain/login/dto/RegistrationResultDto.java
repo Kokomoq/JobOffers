@@ -1,4 +1,4 @@
-package com.junioroffers.domain.loginandregister.dto;
+package com.junioroffers.domain.login.dto;
 
-public class RegistrationResultDto {
+public record RegistrationResultDto(String id, boolean created, String username) {
 }
