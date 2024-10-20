@@ -1,26 +1,27 @@
 package com.junioroffers.domain.offer;
 
-import lombok.AllArgsConstructor;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 class OfferService {
-    private OfferFetchable offerFetcher;
-    private OfferRepository offerRepository;
+
+    private final OfferFetchable offerFetcher;
+    private final OfferRepository offerRepository;
 
     List<Offer> fetchAllOffersAndSaveAllIfNotExists() {
         List<Offer> jobOffers = fetchOffers();
-        final List<Offer> offers = filterNonExistingOffers(jobOffers);
+//        final List<Offer> offers = filterNotExistingOffers(jobOffers);
         try {
-            return offerRepository.saveAll(offers);
-        } catch (OfferDuplicateException offerDuplicateKeyException) {
-            throw new OfferSavingException(offerDuplicateKeyException.getMessage(), jobOffers);
+            return jobOffers;
+//            return offerRepository.saveAll(offers);
+        } catch (OfferDuplicateException duplicateKeyException) {
+            throw new OfferSavingException(duplicateKeyException.getMessage(), jobOffers);
         }
     }
 
-    private List<Offer> filterNonExistingOffers(List<Offer> jobOffers) {
+    private List<Offer> filterNotExistingOffers(List<Offer> jobOffers) {
         return jobOffers.stream()
                 .filter(offerDto -> !offerDto.offerUrl().isEmpty())
                 .filter(offerDto -> !offerRepository.existsByOfferUrl(offerDto.offerUrl()))
@@ -33,5 +34,4 @@ class OfferService {
                 .map(OfferMapper::mapFromJobOfferResponseToOffer)
                 .toList();
     }
-
 }

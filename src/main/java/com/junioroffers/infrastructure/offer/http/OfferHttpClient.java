@@ -25,28 +25,29 @@ public class OfferHttpClient implements OfferFetchable {
 
     @Override
     public List<JobOfferResponse> fetchOffers() {
-        log.info("Started fetching offerts using http client");
+        log.info("Started fetching offers using http client");
         HttpHeaders headers = new HttpHeaders();
         final HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(headers);
         try {
-            String urlForService = getUrlForServivce("/dfafasasd");
+            String urlForService = getUrlForService("/offers");
             final String url = UriComponentsBuilder.fromHttpUrl(urlForService).toUriString();
             ResponseEntity<List<JobOfferResponse>> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity,
-                    new ParameterizedTypeReference<>() {});
-        final List<JobOfferResponse> body = response.getBody();
-        if (body == null) {
-            log.info("Response Body was null returning empty list");
-            return Collections.emptyList();
-        }
-        log.info("Succes Response Body Rerurned");
-        return body;
+                    new ParameterizedTypeReference<>() {
+                    });
+            final List<JobOfferResponse> body = response.getBody();
+            if (body == null) {
+                log.info("Response Body was null returning empty list");
+                return Collections.emptyList();
+            }
+            log.info("Success Response Body Returned: " + body);
+            return body;
         } catch (ResourceAccessException e) {
-            log.info("Error while fetching offers using http client" + e.getMessage());
+            log.error("Error while fetching offers using http client: " + e.getMessage());
             return Collections.emptyList();
         }
     }
 
-    private String getUrlForServivce(String service) {
+    private String getUrlForService(String service) {
         return uri + ":" + port + service;
     }
 }
