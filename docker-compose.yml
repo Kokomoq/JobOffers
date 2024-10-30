@@ -1,5 +1,7 @@
 version: '3.1'
+
 services:
+
   mongo:
     image: mongo:4.0.10
     restart: always
@@ -11,6 +13,7 @@ services:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
     ports:
       - "27017:27017"
+
   mongo-express:
     image: mongo-express
     restart: always  #restart the container regardless of the exit status

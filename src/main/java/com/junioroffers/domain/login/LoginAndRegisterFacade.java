@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class LoginAndRegisterFacade {
+
     private static final String USER_NOT_FOUND = "User not found";
 
     private final LoginRepository repository;
@@ -22,10 +23,7 @@ public class LoginAndRegisterFacade {
                 .username(registerUserDto.username())
                 .password(registerUserDto.password())
                 .build();
-
         User savedUser = repository.save(user);
         return new RegistrationResultDto(savedUser.id(), true, savedUser.username());
     }
-
-
 }

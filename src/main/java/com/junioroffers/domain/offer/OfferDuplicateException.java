@@ -1,12 +1,11 @@
 package com.junioroffers.domain.offer;
 
-import lombok.Getter;
-
-import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 public class OfferDuplicateException extends RuntimeException {
+
     private final List<String> offerUrls;
 
     public OfferDuplicateException(String offerUrl) {
@@ -16,6 +15,6 @@ public class OfferDuplicateException extends RuntimeException {
 
     public OfferDuplicateException(String message, List<Offer> offers) {
         super(String.format("error" + message + offers.toString()));
-        this.offerUrls = offers.stream().map(Offer :: offerUrl).toList();
+        this.offerUrls = offers.stream().map(Offer::offerUrl).toList();
     }
 }

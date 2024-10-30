@@ -1,25 +1,21 @@
 package com.junioroffers.features;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.junioroffers.BaseIntegrationTest;
 import com.junioroffers.SampleJobOfferResponse;
 import com.junioroffers.domain.offer.dto.OfferResponseDto;
 import com.junioroffers.infrastructure.offer.scheduler.HttpOffersScheduler;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import com.fasterxml.jackson.core.type.TypeReference;
-
-
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
 
 
 public class TypicalScenarioUserWantToSeeOffersIntegrationTest extends BaseIntegrationTest implements SampleJobOfferResponse {
@@ -29,8 +25,8 @@ public class TypicalScenarioUserWantToSeeOffersIntegrationTest extends BaseInteg
 
     @Test
     public void userWantToSeeOffersButHaveToBeLoggedInAndExternalServerShouldHaveSomeOffers() throws Exception {
-        //step 1: there are no offers in external HTTP server
-        //given, when & then
+        // step 1: there are no offers in external HTTP server
+        // given && when && then
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
@@ -38,11 +34,10 @@ public class TypicalScenarioUserWantToSeeOffersIntegrationTest extends BaseInteg
                         .withBody(bodyWithZeroOffersJson())));
 
 
-        //step 2: scheduler ran 1st time and made GET to external server and system added 0 offers to database
-        //given & when
+        // step 2: scheduler ran 1st time and made GET to external server and system added 0 offers to database
+        // given && when
         List<OfferResponseDto> newOffers = httpOffersScheduler.fetchAllOffersAndSaveAllIfNotExists();
-
-        //then
+        // then
         assertThat(newOffers).isEmpty();
 
 
@@ -53,18 +48,19 @@ public class TypicalScenarioUserWantToSeeOffersIntegrationTest extends BaseInteg
 
 
         //step 7: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 0 offers
-        //given
+        // given
         String offersUrl = "/offers";
-        //when
+        // when
         ResultActions perform = mockMvc.perform(get(offersUrl)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
-        //then
+        // then
         MvcResult mvcResult2 = perform.andExpect(status().isOk()).andReturn();
         String jsonWithOffers = mvcResult2.getResponse().getContentAsString();
         List<OfferResponseDto> offers = objectMapper.readValue(jsonWithOffers, new TypeReference<>() {
         });
         assertThat(offers).isEmpty();
+
 
         //step 8: there are 2 new offers in external HTTP server
         //step 9: scheduler ran 2nd time and made GET to external server and system added 2 new offers with ids: 1000 and 2000 to database

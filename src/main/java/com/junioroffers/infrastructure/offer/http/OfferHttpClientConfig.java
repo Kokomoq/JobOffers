@@ -12,14 +12,14 @@ import org.springframework.web.client.RestTemplate;
 public class OfferHttpClientConfig {
 
     @Bean
-    RestTemplateResponseErrorHandler restTemplateResponseErrorHandler() {
+    public RestTemplateResponseErrorHandler restTemplateResponseErrorHandler() {
         return new RestTemplateResponseErrorHandler();
     }
 
     @Bean
     public RestTemplate restTemplate(@Value("${offer.http.client.config.connectionTimeout:1000}") long connectionTimeout,
-                                     @Value("${offer.http.client.config.readTimeout:1000}") long readTimeout,
-                                     RestTemplateResponseErrorHandler restTemplateResponseErrorHandler) {
+                              @Value("${offer.http.client.config.readTimeout:1000}") long readTimeout,
+                              RestTemplateResponseErrorHandler restTemplateResponseErrorHandler) {
         return new RestTemplateBuilder()
                 .errorHandler(restTemplateResponseErrorHandler)
                 .setConnectTimeout(Duration.ofMillis(connectionTimeout))
@@ -29,9 +29,8 @@ public class OfferHttpClientConfig {
 
     @Bean
     public OfferFetchable remoteOfferClient(RestTemplate restTemplate,
-                                            @Value("${offer.http.client.config.uri:http://example.com}") String uri,
-                                            @Value("${offer.http.client.config.port:5057}") int port) {
+                                     @Value("${offer.http.client.config.uri:http://example.com}") String uri,
+                                     @Value("${offer.http.client.config.port:5057}") int port) {
         return new OfferHttpClient(restTemplate, uri, port);
     }
-    }
-
+}
