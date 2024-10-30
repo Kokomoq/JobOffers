@@ -31,7 +31,6 @@ class OfferService {
         return jobOffers.stream()
                 .filter(offerDto -> !offerDto.offerUrl().isEmpty())
                 .filter(offerDto -> !offerRepository.existsByOfferUrl(offerDto.offerUrl()))
-
                 .collect(Collectors.toList());
     }
 }

@@ -1,13 +1,15 @@
 package com.junioroffers.domain.offer;
 
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class OfferSavingException extends RuntimeException {
 
-private final List<String> offerUrls;
+    private final List<String> offerUrls;
 
     public OfferSavingException(String offerUrl) {
-        super(String.format("Offer with offerUrl [%s] already exists ", offerUrl));
+        super(String.format("Offer with offerUrl [%s] already exists", offerUrl));
         this.offerUrls = List.of(offerUrl);
     }
 

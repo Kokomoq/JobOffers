@@ -7,6 +7,7 @@ public record JobOfferResponse(
         String title,
         String company,
         String salary,
-        String url
+        String offerUrl
 ) {
+
 }

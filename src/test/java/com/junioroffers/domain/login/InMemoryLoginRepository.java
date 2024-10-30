@@ -25,5 +25,4 @@ public class InMemoryLoginRepository implements LoginRepository {
         database.put(user.username(), user);
         return user;
     }
-
 }

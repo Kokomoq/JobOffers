@@ -3,122 +3,121 @@ package com.junioroffers.domain.offer;
 import com.junioroffers.domain.offer.dto.JobOfferResponse;
 import com.junioroffers.domain.offer.dto.OfferRequestDto;
 import com.junioroffers.domain.offer.dto.OfferResponseDto;
+import java.util.List;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.Test;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.ThrowableAssert.catchThrowable;
+
 
 public class OfferFacadeTest {
 
     @Test
     public void shouldFetchFromJobsFromRemoteAndSaveAllOffersWhenRepositoryIsEmpty() {
-        //given
+        // given
         OfferFacade offerFacade = new OfferFacadeTestConfiguration().offerFacadeForTests();
         assertThat(offerFacade.findAllOffers()).isEmpty();
 
         // when
         List<OfferResponseDto> result = offerFacade.fetchAllOffersAndSaveAllIfNotExists();
 
-        //then
+        // then
         assertThat(result).hasSize(6);
     }
 
     @Test
-    public void shouldSaveOnlyTwoOffersOffSixWhenRepositoryHadFourAddedOffersWithUrls() {
-        //given
+    public void shouldSaveOnlyTwoOffersWhenRepositoryHadFourAddedWithOfferUrls() {
+        // given
         OfferFacade offerFacade = new OfferFacadeTestConfiguration(
                 List.of(
-                        new JobOfferResponse("x", "x", "a", "1"),
-                        new JobOfferResponse("x", "x", "a", "2"),
-                        new JobOfferResponse("x", "x", "a", "3"),
-                        new JobOfferResponse("x", "x", "a", "4"),
-                        new JobOfferResponse("Junior", "Sii", "10000", "https://someurl.pl/5"),
-                        new JobOfferResponse("Mid", "ING", "20000", "https://someother.pl/6")
+                        new JobOfferResponse("id", "id", "asds", "1"),
+                        new JobOfferResponse("assd", "id", "asds", "2"),
+                        new JobOfferResponse("asddd", "id", "asds", "3"),
+                        new JobOfferResponse("asfd", "id", "asds", "4"),
+                        new JobOfferResponse("Junior", "Comarch", "1000", "https://someurl.pl/5"),
+                        new JobOfferResponse("Mid", "Finanteq", "2000", "https://someother.pl/6")
                 )
         ).offerFacadeForTests();
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "1"));
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "2"));
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "3"));
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "4"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "1"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "2"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "3"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "4"));
+        assertThat(offerFacade.findAllOffers()).hasSize(4);
 
-        //when
+        // when
         List<OfferResponseDto> response = offerFacade.fetchAllOffersAndSaveAllIfNotExists();
 
-        //then
+        // then
         assertThat(List.of(
-                response.get(0).offerUrl(),
-                response.get(1).offerUrl()
+                        response.get(0).offerUrl(),
+                        response.get(1).offerUrl()
                 )
         ).containsExactlyInAnyOrder("https://someurl.pl/5", "https://someother.pl/6");
     }
 
     @Test
     public void shouldSaveFourOffersWhenThereAreNoOffersInDatabase() {
-        //given
+        // given
         OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
 
-        //when
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "1"));
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "2"));
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "3"));
-        offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "4"));
+        // when
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "1"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "2"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "3"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "4"));
 
-        //then
+        // then
         assertThat(offerFacade.findAllOffers()).hasSize(4);
     }
 
     @Test
     public void shouldFindOfferByIdWhenOfferWasSaved() {
-        //given
+        // given
         OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
-        OfferResponseDto offerResponseDto = offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "1"));
-
-        //when
+        OfferResponseDto offerResponseDto = offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "1"));
+        // when
         OfferResponseDto offerById = offerFacade.findOfferById(offerResponseDto.id());
 
-        //then
+        // then
         assertThat(offerById).isEqualTo(OfferResponseDto.builder()
                 .id(offerResponseDto.id())
-                .companyName("x")
-                .position("x")
-                .salary("a")
+                .companyName("id")
+                .position("asds")
+                .salary("asdasd")
                 .offerUrl("1")
                 .build()
         );
     }
 
     @Test
-    public void shouldThrowNotFoundException() {
-        //given
+    public void shouldThrowNotFoundExceptionWhenOfferNotFound() {
+        // given
         OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
         assertThat(offerFacade.findAllOffers()).isEmpty();
 
-        //when
+        // when
         Throwable thrown = catchThrowable(() -> offerFacade.findOfferById("100"));
 
-        //then
+        // then
         AssertionsForClassTypes.assertThat(thrown)
                 .isInstanceOf(OfferNotFoundException.class)
                 .hasMessage("Offer with id 100 not found");
     }
 
     @Test
-    public void shouldThrowDuplicateKeyExceptionWhenUrlExists() {
-        //given
+    public void shouldThrowDuplicateKeyExceptionWhenWithOfferUrlExists() {
+        // given
         OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
-        OfferResponseDto offerResponseDto = offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "1"));
+        OfferResponseDto offerResponseDto = offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "hello.pl"));
         String savedId = offerResponseDto.id();
         assertThat(offerFacade.findOfferById(savedId).id()).isEqualTo(savedId);
+        // when
+        Throwable thrown = catchThrowable(() -> offerFacade.saveOffer(
+                new OfferRequestDto("cx", "vc", "xcv", "hello.pl")));
 
-        //when
-        Throwable thrown = catchThrowable(() -> offerFacade.saveOffer(new OfferRequestDto("x", "x", "a", "1")));
-
-        //then
+        // then
         AssertionsForClassTypes.assertThat(thrown)
                 .isInstanceOf(OfferDuplicateException.class)
-                .hasMessage("Offer with offerUrl [1] already exists");
+                .hasMessage("Offer with offerUrl [hello.pl] already exists");
     }
 }

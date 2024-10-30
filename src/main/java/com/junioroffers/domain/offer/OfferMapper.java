@@ -1,5 +1,6 @@
 package com.junioroffers.domain.offer;
 
+
 import com.junioroffers.domain.offer.dto.JobOfferResponse;
 import com.junioroffers.domain.offer.dto.OfferRequestDto;
 import com.junioroffers.domain.offer.dto.OfferResponseDto;
@@ -27,10 +28,11 @@ public class OfferMapper {
 
     public static Offer mapFromJobOfferResponseToOffer(JobOfferResponse jobOfferDto) {
         return Offer.builder()
-                .offerUrl(jobOfferDto.url())
+                .offerUrl(jobOfferDto.offerUrl())
                 .salary(jobOfferDto.salary())
                 .position(jobOfferDto.title())
                 .companyName(jobOfferDto.company())
                 .build();
     }
+
 }
