@@ -9,6 +9,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
+import org.springframework.security.test.context.support.WithMockUser;
+
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,8 +25,8 @@ public class OfferUrlDuplicateErrorIntegrationTest extends BaseIntegrationTest {
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
     }
 
-
     @Test
+    @WithMockUser
     public void shouldReturn409ConflictWhenAddedSecondOfferWithSameOfferUrl() throws Exception {
         // step 1
         // given && when
