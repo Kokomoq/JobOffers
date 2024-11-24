@@ -12,7 +12,7 @@ The Job Offers application elevates the job search experience, focusing on oppor
 
 
 > AUTHOR: DAWID DREZEK <br>
-> LINKEDIN: https://www.linkedin.com/in/dawid-dr%C4%99%C5%BCek-0101ba33a/ <br>
+> LINKEDIN: https://www.linkedin.com/in/dawid-drezek <br>
 
 ## Specification
 
